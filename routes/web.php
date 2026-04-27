@@ -6,9 +6,7 @@ use App\Http\Controllers\Admin\PoliController as AdminPoliController;
 use App\Http\Controllers\Admin\DokterController;
 use App\Http\Controllers\Admin\PasienController;
 use App\Http\Controllers\Admin\ObatController;
-
-    
-
+use App\Http\Controllers\Dokter\JadwalDokterController; // ✅ Tambahkan ini
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -31,10 +29,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::resource('obat', ObatController::class);
 });
 
-Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->group(function () {
+Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->name('dokter.')->group(function () {
     Route::get('/dashboard', function () {
         return view('dokter.dashboard');
-    })->name('dokter.dashboard');
+    })->name('dashboard');
+
+    // ✅ CRUD Jadwal Periksa
+    Route::resource('jadwal', JadwalDokterController::class)->except(['show']);
 });
 
 Route::middleware(['auth', 'role:pasien'])->prefix('pasien')->group(function () {

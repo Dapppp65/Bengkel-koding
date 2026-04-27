@@ -74,7 +74,6 @@
                 Manajemen Obat
             </a>
 
-
         </div>
         @endif
 
@@ -109,6 +108,13 @@
                 class="{{ $baseLink }} {{ request()->routeIs('dokter.dashboard') ? $active : $inactive }}">
                 <i class="fas fa-stethoscope w-4 text-center"></i>
                 Dashboard Dokter
+            </a>
+
+            {{-- ✅ Menu Jadwal Periksa --}}
+            <a href="{{ route('dokter.jadwal.index') }}"
+                class="{{ $baseLink }} {{ request()->routeIs('dokter.jadwal.*') ? $active : $inactive }}">
+                <i class="fas fa-calendar-days w-4 text-center"></i>
+                Jadwal Periksa
             </a>
 
         </div>
