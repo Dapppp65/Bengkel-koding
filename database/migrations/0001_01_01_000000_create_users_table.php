@@ -19,6 +19,7 @@ return new class extends Migration
         $table->string('no_hp')->nullable();
         $table->string('email')->unique();
         $table->string('password');
+        $table->string('no_rm')->nullable();
         $table->enum('role', ['admin', 'dokter', 'pasien'])->default('pasien');
         $table->timestamps();
     });

@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('daftar_poli', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('id_pasien')->constrained('users')->onDelete('cascade');
+            $table->foreignId('id_jadwal')->constrained('jadwal_periksa')->onDelete('cascade');
+            $table->text('keluhan');
+            $table->integer('no_antrian');
+            $table->integer('status_periksa')->default(0); // 0: belum, 1: sudah
             $table->timestamps();
         });
     }

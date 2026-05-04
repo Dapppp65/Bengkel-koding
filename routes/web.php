@@ -6,7 +6,9 @@ use App\Http\Controllers\Admin\PoliController as AdminPoliController;
 use App\Http\Controllers\Admin\DokterController;
 use App\Http\Controllers\Admin\PasienController;
 use App\Http\Controllers\Admin\ObatController;
-use App\Http\Controllers\Dokter\JadwalDokterController; // ✅ Tambahkan ini
+use App\Http\Controllers\Dokter\JadwalDokterController;
+use App\Http\Controllers\Dokter\PeriksaPasienController;
+use App\Http\Controllers\Dokter\RiwayatPasienController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -36,6 +38,15 @@ Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->name('dokter.')->g
 
     // ✅ CRUD Jadwal Periksa
     Route::resource('jadwal', JadwalDokterController::class)->except(['show']);
+
+    // ✅ Periksa Pasien
+    Route::get('/periksa', [PeriksaPasienController::class, 'index'])->name('periksa.index');
+    Route::get('/periksa/{id}/edit', [PeriksaPasienController::class, 'edit'])->name('periksa.edit');
+    Route::patch('/periksa/{id}', [PeriksaPasienController::class, 'update'])->name('periksa.update');
+
+    // ✅ Riwayat Pasien
+    Route::get('/riwayat', [RiwayatPasienController::class, 'index'])->name('riwayat.index');
+    Route::get('/riwayat/{id}', [RiwayatPasienController::class, 'show'])->name('riwayat.show');
 });
 
 Route::middleware(['auth', 'role:pasien'])->prefix('pasien')->group(function () {

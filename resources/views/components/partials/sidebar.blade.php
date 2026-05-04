@@ -117,6 +117,20 @@
                 Jadwal Periksa
             </a>
 
+            {{-- ✅ Menu Memeriksa Pasien --}}
+            <a href="{{ route('dokter.periksa.index') }}"
+                class="{{ $baseLink }} {{ request()->routeIs('dokter.periksa.*') ? $active : $inactive }}">
+                <i class="fas fa-stethoscope w-4 text-center"></i>
+                Memeriksa Pasien
+            </a>
+
+            {{-- ✅ Menu Riwayat Pasien --}}
+            <a href="{{ route('dokter.riwayat.index') }}"
+                class="{{ $baseLink }} {{ request()->routeIs('dokter.riwayat.*') ? $active : $inactive }}">
+                <i class="fas fa-history w-4 text-center"></i>
+                Riwayat Pasien
+            </a>
+
         </div>
         @endif
 

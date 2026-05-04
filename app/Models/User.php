@@ -63,4 +63,8 @@ use Illuminate\Notifications\Notifiable;
         return $this->hasMany(JadwalPeriksa::class, 'id_dokter');
     }
 
+    public function daftarPoli()
+    {
+        return $this->hasMany(DaftarPoli::class, 'id_pasien');
+    }
 }
