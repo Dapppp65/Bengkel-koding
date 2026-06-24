@@ -70,8 +70,13 @@
             </a>
             <a href="{{ route('obat.index') }}"
                 class="{{ $baseLink }} {{ request()->routeIs('obat.*') ? $active : $inactive }}">
-                <i class="fas fa-bed-pulse w-4 text-center"></i>
+                <i class="fas fa-pills w-4 text-center"></i>
                 Manajemen Obat
+            </a>
+            <a href="{{ route('admin.riwayat.index') }}"
+                class="{{ $baseLink }} {{ request()->routeIs('admin.riwayat.*') ? $active : $inactive }}">
+                <i class="fas fa-clock-rotate-left w-4 text-center"></i>
+                Riwayat Pasien
             </a>
 
         </div>

@@ -12,6 +12,32 @@ use Illuminate\Notifications\Notifiable;
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+            if ($user->role === 'pasien' && empty($user->no_rm)) {
+                $yearMonth = now()->format('Ym'); // e.g. 202606
+                
+                // Cari nomor urut terakhir pada bulan/tahun ini
+                $lastPatient = self::where('role', 'pasien')
+                    ->where('no_rm', 'like', $yearMonth . '-%')
+                    ->orderBy('no_rm', 'desc')
+                    ->first();
+
+                if ($lastPatient) {
+                    $lastSequence = intval(substr($lastPatient->no_rm, 7)); // Ambil angka setelah strip (YYYYMM-XXX)
+                    $nextSequence = $lastSequence + 1;
+                } else {
+                    $nextSequence = 1;
+                }
+
+                $user->no_rm = $yearMonth . '-' . sprintf('%03d', $nextSequence);
+            }
+        });
+    }
+
     /**
      * The attributes that are mass assignable.
      *

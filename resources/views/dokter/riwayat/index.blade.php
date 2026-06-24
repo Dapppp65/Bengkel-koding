@@ -32,11 +32,18 @@
                                     {{ $p->no_rm ?? '-' }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4">
-                                <a href="{{ route('dokter.riwayat.show', $p->id) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-black text-white text-sm font-semibold rounded-xl transition-all shadow-sm">
+                            <td class="px-6 py-4 flex items-center gap-2">
+                                <a href="{{ route('dokter.riwayat.show', $p->id) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-black text-white text-xs font-semibold rounded-xl transition-all shadow-sm">
                                     <i class="fas fa-history"></i>
                                     Detail Riwayat
                                 </a>
+                                <form action="{{ route('dokter.riwayat.tambah', $p->id) }}" method="POST" class="inline">
+                                    @csrf
+                                    <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl transition-all shadow-sm">
+                                        <i class="fas fa-plus"></i>
+                                        Tambah Periksa
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                         @empty

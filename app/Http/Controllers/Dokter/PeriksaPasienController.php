@@ -33,10 +33,11 @@ class PeriksaPasienController extends Controller
      */
     public function edit($id)
     {
-        $daftarPoli = DaftarPoli::with('pasien')->findOrFail($id);
+        $daftarPoli = DaftarPoli::with(['pasien', 'periksas.detailPeriksas'])->findOrFail($id);
         $obats = Obat::all();
+        $periksa = $daftarPoli->periksas->first();
 
-        return view('dokter.periksa.create', compact('daftarPoli', 'obats'));
+        return view('dokter.periksa.create', compact('daftarPoli', 'obats', 'periksa'));
     }
 
     /**
@@ -52,6 +53,7 @@ class PeriksaPasienController extends Controller
         ]);
 
         $daftarPoli = DaftarPoli::findOrFail($id);
+        $periksa = Periksa::where('id_daftar_poli', $id)->first();
 
         DB::beginTransaction();
         try {
@@ -59,13 +61,25 @@ class PeriksaPasienController extends Controller
             $totalHargaObat = Obat::whereIn('id', $request->obat_ids)->sum('harga');
             $biayaPeriksa = 150000 + $totalHargaObat;
 
-            // 2. Simpan ke tabel periksa
-            $periksa = Periksa::create([
-                'id_daftar_poli' => $id,
-                'tgl_periksa'    => $request->tgl_periksa,
-                'catatan'        => $request->catatan,
-                'biaya_periksa'  => $biayaPeriksa,
-            ]);
+            if ($periksa) {
+                // Update existing Periksa
+                $periksa->update([
+                    'tgl_periksa'   => $request->tgl_periksa,
+                    'catatan'       => $request->catatan,
+                    'biaya_periksa' => $biayaPeriksa,
+                ]);
+
+                // Delete old detail_periksa
+                DetailPeriksa::where('id_periksa', $periksa->id)->delete();
+            } else {
+                // Create new Periksa
+                $periksa = Periksa::create([
+                    'id_daftar_poli' => $id,
+                    'tgl_periksa'    => $request->tgl_periksa,
+                    'catatan'        => $request->catatan,
+                    'biaya_periksa'  => $biayaPeriksa,
+                ]);
+            }
 
             // 3. Simpan ke tabel detail_periksa
             foreach ($request->obat_ids as $obatId) {
@@ -79,6 +93,11 @@ class PeriksaPasienController extends Controller
             $daftarPoli->update(['status_periksa' => 1]);
 
             DB::commit();
+
+            if ($request->has('from_riwayat')) {
+                return redirect()->route('dokter.riwayat.show', $daftarPoli->id_pasien)->with('success', 'Pemeriksaan berhasil diperbarui!');
+            }
+
             return redirect()->route('dokter.periksa.index')->with('success', 'Pasien berhasil diperiksa!');
         } catch (\Exception $e) {
             DB::rollback();
